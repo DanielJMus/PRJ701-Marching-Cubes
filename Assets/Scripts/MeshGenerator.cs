@@ -28,21 +28,29 @@ public class MeshGenerator
                     int[] tris = Utils.TriangleTable[cubeIndex];
                     foreach(int edge in tris) {
                         if(edge == -1) continue;
-                        // Debug.Log(edge);
+                        
                         int indexA = cornerAIndices[edge];
                         int indexB = cornerBIndices[edge];
 
-                        Vector3 vertex = new Vector3(x, y, z) + (GetCubeCorner(indexA) + GetCubeCorner(indexB) / 2);
+                        // Vector3 vertex = new Vector3(x, y, z) + ((GetCubeCorner(indexA) + GetCubeCorner(indexB)) / 2);
+                        Vector3 vertex = new Vector3(x, y, z) + VertexInterp(surfaceLevel, GetCubeCorner(indexA), GetCubeCorner(indexB), GetData(indexA, data), GetData(indexB, data));
                         vertices.Add(vertex); 
-                        // triangles.Add(triCount + edge);
-                        // Debug.Log(triCount + edge);
+                        triangles.Add(triCount);
+                        triCount++;
                     }
-                    triCount += tris.Length;
                 }
         mesh.SetVertices(vertices);
-        mesh.SetIndices(triangles.ToArray(), MeshTopology.Triangles, 0);
+        mesh.SetTriangles(triangles.ToArray(), 0);
+        mesh.RecalculateNormals();
         return mesh;
-    } 
+    }
+
+    private Vector3 VertexInterp(float surfaceLevel, Vector3 p1, Vector3 p2, float val1, float val2) {
+        if(val1 < val2)
+            return Vector3.Lerp(p1, p2, surfaceLevel);
+        else 
+            return Vector3.Lerp(p2, p1, surfaceLevel);
+    }
 
     private int[] cornerAIndices = new int[12] {0, 1, 2, 3, 4, 5, 6, 7, 0, 1, 2, 3};
     private int[] cornerBIndices = new int[12] {1, 2, 3, 0, 5, 6, 7, 4, 4, 5, 6, 7};
@@ -64,7 +72,24 @@ public class MeshGenerator
         try {
             val = data[x, y, z];
         } catch (System.Exception e) {
-            val = 0;
+            val = 1;
+        }
+        return val;
+    }
+
+    private float GetData (int i, float[,,] data) {
+        float val = 0;
+        try {
+            if(i == 0) val = data[0, 0, 0];
+            if(i == 1) val = data[1, 0, 0];
+            if(i == 2) val = data[1, 1, 0];
+            if(i == 3) val = data[0, 1, 0];
+            if(i == 4) val = data[0, 0, 1];
+            if(i == 5) val = data[1, 0, 1];
+            if(i == 6) val = data[1, 1, 1];
+            if(i == 7) val = data[0, 1, 1];
+        } catch (System.Exception e) {
+            val = data[0, 0, 0];
         }
         return val;
     }
