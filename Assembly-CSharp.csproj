@@ -45,8 +45,10 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>     <Compile Include="Assets\Scripts\DataManager.cs" />
+     <Compile Include="Assets\Scripts\MeshGenerator.cs" />
      <Compile Include="Assets\Scripts\Terrain.cs" />
      <Compile Include="Assets\Scripts\Utils.cs" />
+     <Compile Include="Assets\Scripts\Voxel.cs" />
  <Reference Include="Unity.Timeline.Editor">
  <HintPath>D:/Documents/NMIT/PRJ701/PRJ701MarchingCubes/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
  </Reference>
