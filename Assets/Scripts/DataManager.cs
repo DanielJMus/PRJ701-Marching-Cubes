@@ -18,8 +18,8 @@ public class DataManager
             for(int y = 0; y < data.GetLength(1); y++) {
                 for(int z = 0; z < data.GetLength(2); z++) {
                     data[x,y,z] = Utils.Perlin3D((float)x / 8, (float)y / 8, (float)z / 8);
-                    float height = Mathf.PerlinNoise((float)x / 32, (float)z / 32) * 20;
-                    data[x,y,z] *= (y > 30 + height)?10:1;
+                    // float height = Mathf.PerlinNoise((float)x / 32, (float)z / 32) * 20;
+                    // data[x,y,z] *= (y > 30 + height)?1.5f:1;
                 }
             }
         }

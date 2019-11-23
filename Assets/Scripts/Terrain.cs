@@ -30,7 +30,9 @@ public class Terrain : MonoBehaviour
         // for(int x = 0; x < WorldSize.x; x++)
         //     for(int y = 0; y < WorldSize.y; y++)
         //         for(int z = 0; z < WorldSize.z; z++) {
-        //             if(dataManager.GetData()[x, y, z] < surfaceLevel) {
+        //             float val = dataManager.GetData()[x, y, z];
+        //             if(val < surfaceLevel) {
+        //                 Gizmos.color = new Color(val, val, val);
         //                 Gizmos.DrawCube(new Vector3(x, y, z), Vector3.one / 4);
         //             }
         //         }

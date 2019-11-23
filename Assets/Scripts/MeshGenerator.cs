@@ -32,8 +32,7 @@ public class MeshGenerator
                         int indexA = cornerAIndices[edge];
                         int indexB = cornerBIndices[edge];
 
-                        // Vector3 vertex = new Vector3(x, y, z) + ((GetCubeCorner(indexA) + GetCubeCorner(indexB)) / 2);
-                        Vector3 vertex = new Vector3(x, y, z) + VertexInterp(surfaceLevel, GetCubeCorner(indexA), GetCubeCorner(indexB), GetData(indexA, data), GetData(indexB, data));
+                        Vector3 vertex = new Vector3(x, y, z) + Smooth(surfaceLevel, GetCubeCorner(indexA), GetCubeCorner(indexB), GetData(new Vector3Int(x, y, z), indexA, data), GetData(new Vector3Int(x, y, z), indexB, data));
                         vertices.Add(vertex); 
                         triangles.Add(triCount);
                         triCount++;
@@ -45,11 +44,9 @@ public class MeshGenerator
         return mesh;
     }
 
-    private Vector3 VertexInterp(float surfaceLevel, Vector3 p1, Vector3 p2, float val1, float val2) {
-        if(val1 < val2)
-            return Vector3.Lerp(p1, p2, surfaceLevel);
-        else 
-            return Vector3.Lerp(p2, p1, surfaceLevel);
+    private Vector3 Smooth(float surfaceLevel, Vector3 p1, Vector3 p2, float val1, float val2) {
+        surfaceLevel = (surfaceLevel - val1) / (val2 - val1);
+        return p1 + surfaceLevel * (p2-p1);
     }
 
     private int[] cornerAIndices = new int[12] {0, 1, 2, 3, 4, 5, 6, 7, 0, 1, 2, 3};
@@ -67,29 +64,19 @@ public class MeshGenerator
         return Vector3.zero;
     }
 
-    private float GetData (int x, int y, int z, float[,,] data) {
+    private float GetData (Vector3Int p, int i, float[,,] data) {
         float val = 0;
         try {
-            val = data[x, y, z];
+            if(i == 0) val = data[p.x, p.y, p.z];
+            if(i == 1) val = data[p.x + 1, p.y, p.z];
+            if(i == 2) val = data[p.x + 1, p.y + 1, p.z];
+            if(i == 3) val = data[p.x, p.y + 1, p.z];
+            if(i == 4) val = data[p.x, p.y, p.z + 1];
+            if(i == 5) val = data[p.x + 1, p.y, p.z + 1];
+            if(i == 6) val = data[p.x + 1, p.y + 1, p.z + 1];
+            if(i == 7) val = data[p.x, p.y + 1, p.z + 1];
         } catch (System.Exception e) {
             val = 1;
-        }
-        return val;
-    }
-
-    private float GetData (int i, float[,,] data) {
-        float val = 0;
-        try {
-            if(i == 0) val = data[0, 0, 0];
-            if(i == 1) val = data[1, 0, 0];
-            if(i == 2) val = data[1, 1, 0];
-            if(i == 3) val = data[0, 1, 0];
-            if(i == 4) val = data[0, 0, 1];
-            if(i == 5) val = data[1, 0, 1];
-            if(i == 6) val = data[1, 1, 1];
-            if(i == 7) val = data[0, 1, 1];
-        } catch (System.Exception e) {
-            val = data[0, 0, 0];
         }
         return val;
     }
@@ -97,14 +84,14 @@ public class MeshGenerator
     private int GetCubeIndex (int x, int y, int z, float[,,] data, float surfaceLevel)
     {
         int cubeindex = 0;
-        if (GetData(x,y,z, data) > surfaceLevel) cubeindex |= 1;
-        if (GetData(x+1,y,z, data) > surfaceLevel) cubeindex |= 2;
-        if (GetData(x+1,y+1,z, data) > surfaceLevel) cubeindex |= 4;
-        if (GetData(x,y+1,z, data) > surfaceLevel) cubeindex |= 8;
-        if (GetData(x,y,z+1, data) > surfaceLevel) cubeindex |= 16;
-        if (GetData(x+1,y,z+1, data) > surfaceLevel) cubeindex |= 32;
-        if (GetData(x+1,y+1,z+1, data) > surfaceLevel) cubeindex |= 64;
-        if (GetData(x,y+1,z+1, data) > surfaceLevel) cubeindex |= 128;
+        if (GetData(new Vector3Int(x, y, z), 0, data) > surfaceLevel) cubeindex |= 1;
+        if (GetData(new Vector3Int(x, y, z), 1, data) > surfaceLevel) cubeindex |= 2;
+        if (GetData(new Vector3Int(x, y, z), 2, data) > surfaceLevel) cubeindex |= 4;
+        if (GetData(new Vector3Int(x, y, z), 3, data) > surfaceLevel) cubeindex |= 8;
+        if (GetData(new Vector3Int(x, y, z), 4, data) > surfaceLevel) cubeindex |= 16;
+        if (GetData(new Vector3Int(x, y, z), 5, data) > surfaceLevel) cubeindex |= 32;
+        if (GetData(new Vector3Int(x, y, z), 6, data) > surfaceLevel) cubeindex |= 64;
+        if (GetData(new Vector3Int(x, y, z), 7, data) > surfaceLevel) cubeindex |= 128;
         return cubeindex;
     }
 }
