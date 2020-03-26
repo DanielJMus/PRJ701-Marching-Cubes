@@ -1,32 +1,69 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
-public class Voxel : MonoBehaviour
+public class Voxel
 {
-    // Random float value for each corner of the cube
-    public Vector3 Position;
-    public float[] values = new float[8];
-    // public Vector3[] points = new float[12];
+    private Vector3Int position;
+    private float value;
+    private int materialID = 0;
+    private bool hasBeenGenerated = false;
+    private List<Vertex> data = new List<Vertex>();
 
-    public Voxel () {
-        
-        // values[0] = Utils.Perlin3D(Position.x, Position.y, Position.z);
-        // values[1] = Utils.Perlin3D(Position.x + 1, Position.y, Position.z);
-        // values[2] = Utils.Perlin3D(Position.x + 1, Position.y + 1, Position.z);
-        // values[3] = Utils.Perlin3D(Position.x , Position.y + 1, Position.z);
-        // values[4] = Utils.Perlin3D(Position.x , Position.y, Position.z + 1);
-        // values[5] = Utils.Perlin3D(Position.x + 1 , Position.y, Position.z + 1);
-        // values[6] = Utils.Perlin3D(Position.x + 1 , Position.y + 1, Position.z + 1);
-        // values[7] = Utils.Perlin3D(Position.x , Position.y + 1, Position.z + 1);
+    public Vector3Int Position {
+        get { return position; }
+    }
 
-        // points[0] = new Vector3(Position.x, Position.y, Position.z);
-        // points[1] = new Vector3(Position.x + 1, Position.y, Position.z);
-        // points[2] = new Vector3(Position.x + 1, Position.y + 1, Position.z);
-        // points[3] = new Vector3(Position.x , Position.y + 1, Position.z);
-        // points[4] = new Vector3(Position.x , Position.y, Position.z + 1);
-        // points[5] = new Vector3(Position.x + 1 , Position.y, Position.z + 1);
-        // points[6] = new Vector3(Position.x + 1 , Position.y + 1, Position.z + 
-        // points[7] = new Vector3(Position.x , Position.y + 1, Position.z + 1);
+    public int Material {
+        get { return materialID; }
+    }
+
+    public float Value {
+        get { return value; }
+    }
+
+    public bool HasBeenGenerated {
+        get { return hasBeenGenerated; }
+        set { hasBeenGenerated = value; }
+    }
+
+    public List<Vertex> Data {
+        get { return data; }
+        set { data = value; }
+    }
+
+    public Voxel (Vector3Int p, float v, int mid)
+    {
+        position = p;
+        value = v;
+        materialID = mid;
+    }
+
+    public int HasVertex (Vector3 v) {
+        foreach(Vertex vert in data)
+        {
+            if(vert.position == v)
+            {
+                return vert.index;
+            }
+        }
+        return -1;
+    }
+
+    public void AddVertex(Vertex v) {
+        data.Add(v);
+    }
+}
+
+public class Vertex
+{
+    public Vector3 position;
+    public int index;
+
+    public Vertex (Vector3 p, int i)
+    {
+        position = p;
+        index = i;
     }
 }

@@ -14,7 +14,7 @@ public class MeshGenerator
 
     int triCount = 0;
 
-    public Mesh Generate (float[,,] data, float surfaceLevel)
+    public Mesh Generate (Voxel[,,] data, float surfaceLevel)
     {
         Mesh mesh = new Mesh();
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
@@ -28,15 +28,28 @@ public class MeshGenerator
                     int[] tris = Utils.TriangleTable[cubeIndex];
                     foreach(int edge in tris) {
                         if(edge == -1) continue;
-                        
+
                         int indexA = cornerAIndices[edge];
                         int indexB = cornerBIndices[edge];
 
-                        Vector3 vertex = new Vector3(x, y, z) + Smooth(surfaceLevel, GetCubeCorner(indexA), GetCubeCorner(indexB), GetData(new Vector3Int(x, y, z), indexA, data), GetData(new Vector3Int(x, y, z), indexB, data));
-                        vertices.Add(vertex); 
-                        triangles.Add(triCount);
-                        triCount++;
+                        Vector3 vertex = new Vector3(x, y, z) + Smooth( surfaceLevel, 
+                                                                        GetCubeCorner(indexA),
+                                                                        GetCubeCorner(indexB), 
+                                                                        GetData(new Vector3Int(x, y, z), indexA, data), 
+                                                                        GetData(new Vector3Int(x, y, z), indexB, data));
+                        // Check if vertex is already being used by neighboring thingo
+                        int triangle = SharesVertex(x, y, z, data, vertex);
+                        if(triangle < 0)
+                        {
+                            triangle = triCount;
+                            triCount++;
+                            vertices.Add(vertex);
+                        }
+
+                        triangles.Add(triangle);
+                        data[x, y, z].AddVertex(new Vertex(vertex, triangle));
                     }
+                    data[x, y, z].HasBeenGenerated = true;
                 }
         mesh.SetVertices(vertices);
         mesh.SetTriangles(triangles.ToArray(), 0);
@@ -44,9 +57,45 @@ public class MeshGenerator
         return mesh;
     }
 
-    private Vector3 Smooth(float surfaceLevel, Vector3 p1, Vector3 p2, float val1, float val2) {
-        surfaceLevel = (surfaceLevel - val1) / (val2 - val1);
-        return p1 + surfaceLevel * (p2-p1);
+    // x x x
+    // x x x
+    // x x x
+
+    Vector3Int[] neighbors = new Vector3Int[] {   
+                                            new Vector3Int(-1, 0, 0), 
+                                            new Vector3Int(1, 0, 0),
+                                            new Vector3Int(0, 0, 1),
+                                            new Vector3Int(0, 0, -1),
+                                            new Vector3Int(0, 1, 0),
+                                            new Vector3Int(0, -1, 0),
+                                        };
+
+    private int SharesVertex (int x, int y, int z, Voxel[,,] data, Vector3 vertex)
+    {
+        foreach(Vector3Int v in neighbors)
+        {
+            Voxel voxel = GetNeighborVoxel(x + v.x, y + v.y, z + v.z, data);
+            if(voxel != null) 
+            {
+                if(voxel.HasVertex(vertex) > -1)
+                {
+                    return voxel.HasVertex(vertex);
+                }
+            }
+        }
+        return -1;
+    }
+
+    private Voxel GetNeighborVoxel (int x, int y, int z, Voxel[,,] data)
+    {
+        if(x < 0 || y < 0 || z < 0 || x >= 32 || y >= 32 || z >= 32) return null;
+        else return data[x, y, z];
+    }
+
+    private Vector3 Smooth(float surfaceLevel, Vector3 position1, Vector3 position2, float point1, float point2)
+    {
+        surfaceLevel = (surfaceLevel - point1) / (point2 - point1);
+        return position1 + surfaceLevel * (position2-position1);
     }
 
     private int[] cornerAIndices = new int[12] {0, 1, 2, 3, 4, 5, 6, 7, 0, 1, 2, 3};
@@ -64,24 +113,24 @@ public class MeshGenerator
         return Vector3.zero;
     }
 
-    private float GetData (Vector3Int p, int i, float[,,] data) {
+    private float GetData (Vector3Int p, int i, Voxel[,,] data) {
         float val = 0;
         try {
-            if(i == 0) val = data[p.x, p.y, p.z];
-            if(i == 1) val = data[p.x + 1, p.y, p.z];
-            if(i == 2) val = data[p.x + 1, p.y + 1, p.z];
-            if(i == 3) val = data[p.x, p.y + 1, p.z];
-            if(i == 4) val = data[p.x, p.y, p.z + 1];
-            if(i == 5) val = data[p.x + 1, p.y, p.z + 1];
-            if(i == 6) val = data[p.x + 1, p.y + 1, p.z + 1];
-            if(i == 7) val = data[p.x, p.y + 1, p.z + 1];
+            if(i == 0) val = data[p.x, p.y, p.z].Value;
+            if(i == 1) val = data[p.x + 1, p.y, p.z].Value;
+            if(i == 2) val = data[p.x + 1, p.y + 1, p.z].Value;
+            if(i == 3) val = data[p.x, p.y + 1, p.z].Value;
+            if(i == 4) val = data[p.x, p.y, p.z + 1].Value;
+            if(i == 5) val = data[p.x + 1, p.y, p.z + 1].Value;
+            if(i == 6) val = data[p.x + 1, p.y + 1, p.z + 1].Value;
+            if(i == 7) val = data[p.x, p.y + 1, p.z + 1].Value;
         } catch (System.Exception e) {
             val = 1;
         }
         return val;
     }
 
-    private int GetCubeIndex (int x, int y, int z, float[,,] data, float surfaceLevel)
+    private int GetCubeIndex (int x, int y, int z, Voxel[,,] data, float surfaceLevel)
     {
         int cubeindex = 0;
         if (GetData(new Vector3Int(x, y, z), 0, data) > surfaceLevel) cubeindex |= 1;

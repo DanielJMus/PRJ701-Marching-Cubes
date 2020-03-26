@@ -19,6 +19,7 @@ public class Terrain : MonoBehaviour
     }
 
     void Update () {
+        // If the surfaceLevel has changed, update the terrain.
         if(surfaceLevel != previousSurfaceLevel) {
             previousSurfaceLevel = surfaceLevel;
             MeshGenerator meshgen = new MeshGenerator();
