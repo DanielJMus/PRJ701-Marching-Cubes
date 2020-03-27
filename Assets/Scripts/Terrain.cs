@@ -23,7 +23,7 @@ public class Terrain : MonoBehaviour
         if(surfaceLevel != previousSurfaceLevel) {
             previousSurfaceLevel = surfaceLevel;
             MeshGenerator meshgen = new MeshGenerator();
-            GetComponent<MeshFilter>().mesh = meshgen.Generate(dataManager.GetData(), surfaceLevel);
+            GetComponent<MeshFilter>().mesh = meshgen.Generate(dataManager.GetData(), surfaceLevel, WorldSize);
         }
     }
 

@@ -54,6 +54,7 @@
      <Compile Include="Assets\Scripts\Utils.cs" />
      <Compile Include="Assets\Scripts\Voxel.cs" />
      <None Include="Assets\Shaders\triplanarworld.shader" />
+     <None Include="Assets\Shaders\normals.shader" />
      <None Include="Assets\Post Processing\DepthImageEffectShader.shader" />
  <Reference Include="UnityEngine">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.6f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
@@ -620,6 +621,14 @@
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{53648a31-810e-7d96-6e99-ed97e1138d96}</Project>
       <Name>UnityEditor.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Postprocessing.Editor.csproj">
+      <Project>{2cdec824-86de-1e28-ccc8-2f7e957afc0e}</Project>
+      <Name>Unity.Postprocessing.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Postprocessing.Runtime.csproj">
+      <Project>{5835e052-4a58-9b0c-3a4d-734cf08632b7}</Project>
+      <Name>Unity.Postprocessing.Runtime</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

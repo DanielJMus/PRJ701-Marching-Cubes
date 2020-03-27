@@ -11,13 +11,15 @@ public class MeshGenerator
 
     private List<Vector3> vertices;
     private List<int> triangles;
+    Vector3Int worldSize;
 
     int triCount = 0;
 
-    public Mesh Generate (Voxel[,,] data, float surfaceLevel)
+    public Mesh Generate (Voxel[,,] data, float surfaceLevel, Vector3Int size)
     {
         Mesh mesh = new Mesh();
-        mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+        // mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+        worldSize = size;
         vertices = new List<Vector3>();
         triangles = new List<int>();
         for(int x = 0; x < data.GetLength(0); x++)
@@ -53,22 +55,20 @@ public class MeshGenerator
                 }
         mesh.SetVertices(vertices);
         mesh.SetTriangles(triangles.ToArray(), 0);
-        mesh.RecalculateNormals();
+        mesh.RecalculateNormals(180);
         return mesh;
     }
 
-    // x x x
-    // x x x
-    // x x x
-
-    Vector3Int[] neighbors = new Vector3Int[] {   
-                                            new Vector3Int(-1, 0, 0), 
-                                            new Vector3Int(1, 0, 0),
-                                            new Vector3Int(0, 0, 1),
-                                            new Vector3Int(0, 0, -1),
-                                            new Vector3Int(0, 1, 0),
-                                            new Vector3Int(0, -1, 0),
-                                        };
+    Vector3Int[] neighbors = new Vector3Int[] 
+    {   
+        new Vector3Int(-1, 0, 0), 
+        new Vector3Int(1, 0, 0),
+        new Vector3Int(0, 0, 1),
+        new Vector3Int(0, 0, 0),
+        new Vector3Int(0, 0, -1),
+        new Vector3Int(0, 1, 0),
+        new Vector3Int(0, -1, 0),
+    };
 
     private int SharesVertex (int x, int y, int z, Voxel[,,] data, Vector3 vertex)
     {
@@ -88,7 +88,7 @@ public class MeshGenerator
 
     private Voxel GetNeighborVoxel (int x, int y, int z, Voxel[,,] data)
     {
-        if(x < 0 || y < 0 || z < 0 || x >= 32 || y >= 32 || z >= 32) return null;
+        if(x < 0 || y < 0 || z < 0 || x >= worldSize.x || y >= worldSize.y || z >= worldSize.z) return null;
         else return data[x, y, z];
     }
 
