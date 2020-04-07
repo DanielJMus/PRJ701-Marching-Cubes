@@ -6,13 +6,13 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class DepthImageEffect : MonoBehaviour {
 
-    private Camera camera;
+    private Camera cam;
     public Material effectMaterial;
 
     void OnEnable()
     {
-        camera = GetComponent<Camera>();
-        camera.depthTextureMode = DepthTextureMode.Depth;
+        cam = GetComponent<Camera>();
+        cam.depthTextureMode = DepthTextureMode.Depth;
     }
 
     [ImageEffectOpaque]

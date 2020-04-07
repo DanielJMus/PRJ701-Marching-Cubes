@@ -9,26 +9,32 @@ public class Voxel
     private float value;
     private int materialID = 0;
     private bool hasBeenGenerated = false;
-    private List<Vertex> data = new List<Vertex>();
+    // private List<Vertex> data = new List<Vertex>();
+    private Dictionary<Vector3, Vertex> data = new Dictionary<Vector3, Vertex>();
 
-    public Vector3Int Position {
+    public Vector3Int Position 
+    {
         get { return position; }
     }
 
-    public int Material {
+    public int Material 
+    {
         get { return materialID; }
     }
 
-    public float Value {
+    public float Value 
+    {
         get { return value; }
     }
 
-    public bool HasBeenGenerated {
+    public bool HasBeenGenerated 
+    {
         get { return hasBeenGenerated; }
         set { hasBeenGenerated = value; }
     }
 
-    public List<Vertex> Data {
+    public Dictionary<Vector3, Vertex> Data 
+    {
         get { return data; }
         set { data = value; }
     }
@@ -40,30 +46,24 @@ public class Voxel
         materialID = mid;
     }
 
-    public int HasVertex (Vector3 v) {
-        foreach(Vertex vert in data)
+    public int HasVertex (Vector3 v) 
+    {
+        if(data.ContainsKey(v))
         {
-            if(vert.position == v)
-            {
-                return vert.index;
-            }
+            return data[v].index;
         }
+        // for(int i = 0; i < data.Count(); i++)
+        // {
+        //     if(data[i].position == v)
+        //     {
+        //         return data[i].index;
+        //     }
+        // }
         return -1;
     }
 
-    public void AddVertex(Vertex v) {
-        data.Add(v);
-    }
-}
-
-public class Vertex
-{
-    public Vector3 position;
-    public int index;
-
-    public Vertex (Vector3 p, int i)
+    public void AddVertex(Vertex v)
     {
-        position = p;
-        index = i;
+        data.Add(v.position, v);
     }
 }

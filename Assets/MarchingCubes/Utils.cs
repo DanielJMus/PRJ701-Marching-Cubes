@@ -12,7 +12,7 @@ public static class Utils
         0xa3c, 0xb35, 0x83f, 0x936, 0xe3a, 0xf33, 0xc39, 0xd30,
         0x3a0, 0x2a9, 0x1a3, 0xaa , 0x7a6, 0x6af, 0x5a5, 0x4ac,
         0xbac, 0xaa5, 0x9af, 0x8a6, 0xfaa, 0xea3, 0xda9, 0xca0,
-        0x460, 0x569, 0x663, 0x76a, 0x66 , 0x16f, 0x265, 0x36c,
+        0x460, 0x569, 0x663, 0x76a, 0x66 , 0x32f, 0x265, 0x36c,
         0xc6c, 0xd65, 0xe6f, 0xf66, 0x86a, 0x963, 0xa69, 0xb60,
         0x5f0, 0x4f9, 0x7f3, 0x6fa, 0x1f6, 0xff , 0x3f5, 0x2fc,
         0xdfc, 0xcf5, 0xfff, 0xef6, 0x9fa, 0x8f3, 0xbf9, 0xaf0,
@@ -27,7 +27,7 @@ public static class Utils
         0xaf0, 0xbf9, 0x8f3, 0x9fa, 0xef6, 0xfff, 0xcf5, 0xdfc,
         0x2fc, 0x3f5, 0xff , 0x1f6, 0x6fa, 0x7f3, 0x4f9, 0x5f0,
         0xb60, 0xa69, 0x963, 0x86a, 0xf66, 0xe6f, 0xd65, 0xc6c,
-        0x36c, 0x265, 0x16f, 0x66 , 0x76a, 0x663, 0x569, 0x460,
+        0x36c, 0x265, 0x32f, 0x66 , 0x76a, 0x663, 0x569, 0x460,
         0xca0, 0xda9, 0xea3, 0xfaa, 0x8a6, 0x9af, 0xaa5, 0xbac,
         0x4ac, 0x5a5, 0x6af, 0x7a6, 0xaa , 0x1a3, 0x2a9, 0x3a0,
         0xd30, 0xc39, 0xf33, 0xe3a, 0x936, 0x83f, 0xb35, 0xa3c,
@@ -297,6 +297,52 @@ public static class Utils
         new int[] {0, 3, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
         new int[] {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
     };
+
+    public static Vector3Int[] Neighbors = new Vector3Int[] 
+    {   
+        new Vector3Int(-1, 0, 0), 
+        new Vector3Int(1, 0, 0),
+        new Vector3Int(0, 0, 1),
+        new Vector3Int(0, 0, 0),
+        new Vector3Int(0, 0, -1),
+        new Vector3Int(0, 1, 0),
+        new Vector3Int(0, -1, 0),
+    };
+
+    public static Vector3Int[] ChunkNeighbors = new Vector3Int[] 
+    {   
+        new Vector3Int(-32, 32, -32),
+        new Vector3Int(0, 32, -32),
+        new Vector3Int(32, 32, -32),
+        new Vector3Int(-32, 32, 0),
+        new Vector3Int(0, 32, 0),
+        new Vector3Int(32, 32, 0),
+        new Vector3Int(-32, 32, 32),
+        new Vector3Int(0, 32, 32),
+        new Vector3Int(32, 32, 32),
+
+        new Vector3Int(-32, 0, -32),
+        new Vector3Int(0, 0, -32),
+        new Vector3Int(32, 0, -32),
+        new Vector3Int(-32, 0, 0),
+        new Vector3Int(0, 0, 0),
+        new Vector3Int(32, 0, 0),
+        new Vector3Int(-32, 0, 32),
+        new Vector3Int(0, 0, 32),
+        new Vector3Int(32, 0, 32),
+
+        new Vector3Int(-32, -32, -32),
+        new Vector3Int(0, -32, -32),
+        new Vector3Int(32, -32, -32),
+        new Vector3Int(-32, -32, 0),
+        new Vector3Int(0, -32, 0),
+        new Vector3Int(32, -32, 0),
+        new Vector3Int(-32, -32, 32),
+        new Vector3Int(0, -32, 32),
+        new Vector3Int(32, -32, 32)
+
+    };
+
 
 
     // This needs to be replaced by a real solution
